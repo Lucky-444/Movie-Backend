@@ -1,9 +1,13 @@
-const Movie = require("../models/movie.model");
+const {
+  createMovieService,
+  deleteMovieService,
+  getMoviesService,
+} = require("../services/movie.services");
 
 const createMovie = async (req, res) => {
   try {
     const movieData = req.body;
-    const movie = await Movie.create(movieData);
+    const movie = await createMovieService(movieData); // use service
     return res.status(201).json({
       message: "Movie created successfully",
       data: movie,
@@ -11,8 +15,7 @@ const createMovie = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log("Error Occcured In CreateMovieController", error);
-
+    console.log("Error Occurred In CreateMovieController", error);
     return res.status(500).json({
       message: "Error creating movie",
       data: null,
@@ -23,10 +26,9 @@ const createMovie = async (req, res) => {
 };
 
 const deleteMovie = async (req, res) => {
-  // To be implemented
   try {
     const movieId = req.params.id;
-    const deletedMovie = await Movie.findByIdAndDelete(movieId);
+    const deletedMovie = await deleteMovieService(movieId); // use service
 
     if (!deletedMovie) {
       return res.status(404).json({
@@ -36,6 +38,7 @@ const deleteMovie = async (req, res) => {
         success: false,
       });
     }
+
     return res.status(200).json({
       message: "Movie deleted successfully",
       data: deletedMovie,
@@ -54,12 +57,11 @@ const deleteMovie = async (req, res) => {
 };
 
 const getMovies = async (req, res) => {
-  // To be implemented
   try {
-    const { id } = req.params;
-    const movies = await Movie.findById(id);
+    const movieId = req.params.id;
+    const movie = await getMoviesService(movieId); // use service
 
-    if (!movies) {
+    if (!movie) {
       return res.status(404).json({
         message: "Movie not found",
         data: null,
@@ -70,7 +72,7 @@ const getMovies = async (req, res) => {
 
     return res.status(200).json({
       message: "Movie fetched successfully",
-      data: movies,
+      data: movie,
       error: null,
       success: true,
     });
