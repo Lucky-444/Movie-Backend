@@ -14,13 +14,11 @@ const getMoviesService = async (movieId) => {
   return movie;
 }
 
-
 const getAllMoviesFromService = async () => {
   const movies = await Movie.find({});
 
   return movies ; 
 }
-
 
 const updateMovieService = async (id, data) => {
   try {
@@ -42,7 +40,6 @@ const updateMovieService = async (id, data) => {
     }
   }
 };
-
 
 const fetchMovie = async(filter) => {
   let query = {};
