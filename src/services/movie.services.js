@@ -1,5 +1,5 @@
 const Movie = require("../models/movie.model");
-
+const STATUS = require("../others/constants").STATUS;
 const createMovieService = async (movieData) => {
   const movie = await Movie.create(movieData);
   return movie;
@@ -43,10 +43,42 @@ const updateMovieService = async (id, data) => {
   }
 };
 
+
+const fetchMovie = async(filter) => {
+  let query = {};
+  if(filter?.name){
+    query.name = filter.name;
+  }
+  if(filter?.language){
+    query.language = filter.language;
+  }
+
+  if(filter?.releaseStatus){
+    query.releaseStatus = filter.releaseStatus;
+  }
+
+  if(filter?.releaseDate){
+    query.releaseDate = { $gte: filter.releaseDate };
+  }
+
+  const movies = await Movie.find(query);
+
+  if(!movies){
+    throw{
+      err : "No movie found",
+      code: STATUS.NOT_FOUND,
+    }
+  }
+
+  return movies;
+}
+
+
 module.exports = {
   createMovieService,
   deleteMovieService,
   getMoviesService,
   getAllMoviesFromService,
   updateMovieService,
+  fetchMovie,
 };
