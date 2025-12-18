@@ -2,6 +2,8 @@ const {
   createMovieService,
   deleteMovieService,
   getMoviesService,
+  getAllMoviesFromService,
+  updateMovieService,
 } = require("../services/movie.services");
 
 const createMovie = async (req, res) => {
@@ -87,8 +89,70 @@ const getMovies = async (req, res) => {
   }
 };
 
+const getAllMovies = async (req, res) => {
+  try {
+    const allMovies = await getAllMoviesFromService();
+    if (!allMovies) {
+      return res.status(404).json({
+        message: "Movie not found",
+        data: null,
+        error: "No movie with the given ID",
+        success: false,
+      });
+    }
+     return res.status(200).json({
+       message: "Movies fetched successfully",
+       
+       error: null,
+       success: true,
+       allMovies,
+     });
+  } catch (error) {
+    console.log("error in GetAllMoviesController", error);
+    return res.status(500).json({
+      message: "Error fetching movies",
+      data: null,
+      error: error.message,
+      success: false,
+    });
+  }
+};
+
+const updateMovieController = async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const updateData = req.body;
+    const updatedMovie = await updateMovieService(movieId, updateData);
+    if (!updatedMovie) {
+      return res.status(404).json({
+        message: "Movie not found",
+        data: null,
+        error: "No movie with the given ID",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      message: "Movie updated successfully",
+      data: updatedMovie,
+      error: null,
+      success: true,
+    });
+  } catch (error) {
+    console.log("Error Occurred In UpdateMovieController", error);
+    const statusCode = error.code || 500;
+    return res.status(statusCode).json({
+      message: "Error updating movie",
+      data: null,
+      error: error.err || error.message,
+      success: false,
+    });
+  }
+};
+
 module.exports = {
   createMovie,
   deleteMovie,
   getMovies,
+  getAllMovies,
+  updateMovieController,
 };
