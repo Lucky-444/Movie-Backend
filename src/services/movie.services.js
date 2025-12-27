@@ -47,7 +47,7 @@ const fetchMovies = async(filter) => {
     query.name = filter.name;
   }
   if(filter?.language){
-    query.language = filter.language;
+    query.language = new RegExp(`^${filter.language}$`, "i"); // case-insensitive exact match
   }
 
   if(filter?.releaseStatus){
