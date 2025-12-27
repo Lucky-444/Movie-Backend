@@ -7,7 +7,7 @@ const routes = (app) => {
   app.get("/mba/api/v1/movies/:id", getMovies);
   app.delete("/mba/api/v1/movies/:id", deleteMovie);
   app.get("/mba/api/v1/movies", getAllMovies);
-  app.put("/mba/api/v1/movies/:id", updateMovieController);
+  app.put("/mba/api/v1/movies/:id",validateMovie , updateMovieController);
 };
 
 module.exports = routes;

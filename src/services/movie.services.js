@@ -24,7 +24,7 @@ const updateMovieService = async (id, data) => {
   try {
     const movie = await Movie.findByIdAndUpdate(id, data, {
       new: true,
-      runValidators: true,
+      runValidators: true, // to run schema validators on update 
     });
     return movie;
   } catch (error) {

@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 const movieValidator = Joi.object({
-  title: Joi.string().required(),
+  name: Joi.string().required().min(4).max(100),
   description: Joi.string().required(),
   casts: Joi.array().items(Joi.string().required()).min(1).required(),
   trailerUrl: Joi.string().uri().required(),
@@ -11,6 +11,7 @@ const movieValidator = Joi.object({
   releaseStatus: Joi.string()
     .valid("RELEASED", "UNRELEASED", "BLOCKED")
     .required(),
+  poster: Joi.string().uri().required(),
 });
 
 const validateMovie = (req, res, next) => {
