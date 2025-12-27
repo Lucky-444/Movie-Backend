@@ -4,7 +4,13 @@ const {
   getMoviesService,
   getAllMoviesFromService,
   updateMovieService,
+  fetchMovies,
 } = require("../services/movie.services");
+const { STATUS } = require("../others/constants");
+const {
+  successResponseBody,
+  errorResponseBody,
+} = require("../utils/responseBody");
 
 const createMovie = async (req, res) => {
   try {
@@ -88,36 +94,6 @@ const getMovies = async (req, res) => {
     });
   }
 };
-
-const getAllMovies = async (req, res) => {
-  try {
-    const allMovies = await getAllMoviesFromService();
-    if (!allMovies) {
-      return res.status(404).json({
-        message: "Movie not found",
-        data: null,
-        error: "No movie with the given ID",
-        success: false,
-      });
-    }
-     return res.status(200).json({
-       message: "Movies fetched successfully",
-       
-       error: null,
-       success: true,
-       allMovies,
-     });
-  } catch (error) {
-    console.log("error in GetAllMoviesController", error);
-    return res.status(500).json({
-      message: "Error fetching movies",
-      data: null,
-      error: error.message,
-      success: false,
-    });
-  }
-};
-
 const updateMovieController = async (req, res) => {
   try {
     const movieId = req.params.id;
@@ -149,10 +125,39 @@ const updateMovieController = async (req, res) => {
   }
 };
 
+const getQueryMovies = async (req, res) => {
+  try {
+    const filter = req.query;
+    const response = await fetchMovies(filter);
+
+    successResponseBody.data = response;
+    successResponseBody.message = "Movies fetched successfully";
+
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Movies fetched successfully",
+    //   data: response,
+    //   err: null,
+    // });
+    return res.status(200).json(successResponseBody);
+  } catch (error) {
+    console.log("Error Occurred In getQueryMovies controller", error);
+    const statusCode = error.code || 500;
+    if (error.err) {
+      errorResponseBody.err = error.err;
+      return res.status(statusCode).json(errorResponseBody);
+    }
+    errorResponseBody.data = null;
+    errorResponseBody.err = error.err || null;
+    errorResponseBody.message = error.message || "Error fetching movies";
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+  }
+};
+
 module.exports = {
   createMovie,
   deleteMovie,
   getMovies,
-  getAllMovies,
+  getQueryMovies,
   updateMovieController,
 };

@@ -41,7 +41,7 @@ const updateMovieService = async (id, data) => {
   }
 };
 
-const fetchMovie = async(filter) => {
+const fetchMovies = async(filter) => {
   let query = {};
   if(filter?.name){
     query.name = filter.name;
@@ -60,11 +60,12 @@ const fetchMovie = async(filter) => {
 
   const movies = await Movie.find(query);
 
-  if(!movies){
-    throw{
-      err : "No movie found",
+  if (movies.length === 0) {
+    throw {
+      err: "No movie found",
+      message: "No movies match your filters",
       code: STATUS.NOT_FOUND,
-    }
+    };
   }
 
   return movies;
@@ -77,5 +78,5 @@ module.exports = {
   getMoviesService,
   getAllMoviesFromService,
   updateMovieService,
-  fetchMovie,
+  fetchMovies,
 };
