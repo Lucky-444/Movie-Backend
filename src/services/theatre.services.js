@@ -62,8 +62,56 @@ const getTheatreByIdService = async (theatreId) => {
   }
 };
 
+const getAllTheatresService = async () => {
+  try {
+    const theatres = await Theatre.find();
+    return theatres;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllQueryTheatresService = async (data) => {
+  // to be implemented later
+  try{
+    let query = {};
+    let pagination = {};
+    if (data && data.name) {
+      // this checks whether name is present in query params or not
+      query.name = data.name;
+    }
+    if(data && data.city){
+      // this checks whether city is present in query params or not
+      query.city = data.city;
+    }
+    if (data && data.movieId) {
+      query.movies = { $all: data.movieId };
+    }
+
+    if(data && data.pincode){
+      // this checks whether pincode is present in query params or not
+      query.pincode = data.pincode;
+    }
+    if(data && data.page && data.limit){
+      const page = parseInt(data.page);
+      const limit = parseInt(data.limit);
+      const skip = (page - 1) * limit;
+      pagination.skip = skip;
+      pagination.limit = limit;
+    }
+
+    const theatres = await Theatre.find(query, null, pagination);
+    return theatres;
+  }catch(error){
+    throw error;
+  }
+}
+
+
 module.exports = {
   createTheatreService,
   deleteTheatreService,
   getTheatreByIdService,
+  getAllTheatresService,
+  getAllQueryTheatresService,
 };

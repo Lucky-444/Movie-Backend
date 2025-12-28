@@ -1,4 +1,4 @@
-const { createTheatreController, deleteTheatreController, getTheatreByIdController } = require("../controllers/theatre.controller");
+const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController } = require("../controllers/theatre.controller");
 const { validateTheatreCreateRequest } = require("../middlewares/theatre.middleware");
 
 const routes = (app) => {
@@ -14,6 +14,12 @@ const routes = (app) => {
 
   // Get theatre by id route
   app.get("/mba/api/v1/theatres/:id", getTheatreByIdController);
+
+  // Get all theatres route
+  app.get("/mba/api/v1/theatres", getAllTheatresController);
+
+  // Get all theatres with query params
+  app.get("/mba/api/v1/theatres", getAllQueryTheatresController);
 };
 
 module.exports = routes;
