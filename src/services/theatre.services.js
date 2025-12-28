@@ -171,6 +171,15 @@ const getAllMoviesInTheatreService = async (theatreId) => {
   }
 };
 
+
+/**
+ * 
+ * @param theatreId -> unique id of the theatre for which we want to update movies
+ * @param movieIds -> array of movie ids that are expected to be updated in theatre
+ * @param insert -> boolean that tells whether we want insert movies or remove them
+ * @returns -> updated theatre object
+ */
+
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   try {
     let theatre;
