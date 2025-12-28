@@ -19,8 +19,51 @@ const createTheatreService = async (theatreData) => {
   }
 };
 
+const deleteTheatreService = async (theatreId) => {
+  try {
+    const theatre = await Theatre.findByIdAndDelete(theatreId);
+    if (!theatre) {
+      throw {
+        err: `No theatre found with id: ${theatreId}`,
+        code: STATUS.NOT_FOUND,
+      };
+    }
 
+    return theatre;
+  } catch (error) {
+    if (error.name == "CastError") {
+      throw {
+        err: `Theatre id: ${theatreId} is not in proper format`,
+        code: STATUS.BAD_REQUEST,
+      };
+    } else
+      throw error;
+  }
+};
+
+const getTheatreByIdService = async (theatreId) => {
+  try {
+    const theatre = await Theatre.findById(theatreId);
+    if (!theatre) {
+      throw {
+        err: `No theatre found with id: ${theatreId}`,
+        code: STATUS.NOT_FOUND,
+      };
+    }
+    return theatre;
+  } catch (error) {
+    if (error.name == "CastError") {
+      throw {
+        err: `Theatre id: ${theatreId} is not in proper format`,
+        code: STATUS.BAD_REQUEST,
+      };
+    } else
+      throw error;
+  }
+};
 
 module.exports = {
   createTheatreService,
+  deleteTheatreService,
+  getTheatreByIdService,
 };

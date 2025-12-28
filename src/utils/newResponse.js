@@ -1,6 +1,6 @@
 const success = (message, data) => ({
   success: true,
-  message,
+  message ,
   data,
   err: null,
 });

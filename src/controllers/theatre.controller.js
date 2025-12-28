@@ -1,6 +1,6 @@
 const Theatre = require("../models/theatre.model");
 const STATUS = require("../others/constants").STATUS;
-const { createTheatreService } = require("../services/theatre.services");
+const { createTheatreService, deleteTheatreService, getTheatreByIdService } = require("../services/theatre.services");
 const {
   successResponseBody,
   errorResponseBody,
@@ -26,6 +26,41 @@ const createTheatreController = async (req, res) => {
   }
 };
 
+const deleteTheatreController = async (req, res) => {
+  try {
+    const theatreId = req.params.id;
+    const response = await deleteTheatreService(theatreId);
+
+    return res
+      .status(200)
+      .json(success("Theatre deleted successfully", response));
+  } catch (error) {
+    console.log("Error Occurred In DeleteTheatreController", error);
+
+    return res
+      .status(error.code || STATUS.INTERNAL_SERVER_ERROR)
+      .json(failure("Error deleting theatre", error.err || error.message));
+  };
+};
+
+
+const getTheatreByIdController = async (req, res) => {
+  try {
+    const theatreId = req.params.id;
+    const response = await getTheatreByIdService(theatreId);
+    return res
+      .status(200)
+      .json(success("Theatre fetched successfully", response));
+  } catch (error) {
+    console.log("Error Occurred In GetTheatreByIdController", error);
+    return res.status(error.code || STATUS.INTERNAL_SERVER_ERROR).json(
+      failure("Error fetching theatre", error.err || error.message)
+    );
+  }
+};
+
 module.exports = {
   createTheatreController,
+  deleteTheatreController,
+  getTheatreByIdController,
 };
