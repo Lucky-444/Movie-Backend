@@ -16,10 +16,12 @@ const routes = (app) => {
   app.get("/mba/api/v1/theatres/:id", getTheatreByIdController);
 
   // Get all theatres route
-  app.get("/mba/api/v1/theatres", getAllTheatresController);
+  app.get("/mba/api/v1/theatres/all", getAllTheatresController);
 
   // Get all theatres with query params
   app.get("/mba/api/v1/theatres", getAllQueryTheatresController);
+
+
 };
 
 module.exports = routes;

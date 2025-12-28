@@ -85,7 +85,24 @@ const getAllQueryTheatresService = async (data) => {
       query.city = data.city;
     }
     if (data && data.movieId) {
-      query.movies = { $all: data.movieId };
+      // query.movies = data.movieId;
+
+      /**const movieIds = Array.isArray(data.movieId)
+    ? data.movieId
+    : [data.movieId];
+
+    query.movies = { $in: movieIds }; 
+    
+
+    this handles multiple movieIds in query params 
+    */
+
+        const movieIds = Array.isArray(data.movieId)
+          ? data.movieId
+          : [data.movieId];
+
+        query.movies = { $in: movieIds };
+
     }
 
     if(data && data.pincode){

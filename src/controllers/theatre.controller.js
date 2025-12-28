@@ -1,6 +1,6 @@
 const Theatre = require("../models/theatre.model");
 const STATUS = require("../others/constants").STATUS;
-const { createTheatreService, deleteTheatreService, getTheatreByIdService, getAllTheatresService } = require("../services/theatre.services");
+const { createTheatreService, deleteTheatreService, getTheatreByIdService, getAllTheatresService, getAllQueryTheatresService } = require("../services/theatre.services");
 const {
   successResponseBody,
   errorResponseBody,
@@ -77,7 +77,7 @@ const getAllTheatresController = async (req, res) => {
 const getAllQueryTheatresController = async (req, res) => {
   // to be implemented later
   try {
-    const response = await getAllQueryTheatresService();
+    const response = await getAllQueryTheatresService(req.query);
     return res
       .status(STATUS.OK)
       .json(success("Theatres fetched successfully", response));
