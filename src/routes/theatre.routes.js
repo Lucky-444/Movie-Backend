@@ -1,5 +1,5 @@
-const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController } = require("../controllers/theatre.controller");
-const { validateTheatreCreateRequest } = require("../middlewares/theatre.middleware");
+const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController, getAllMoviesInTheatreController, updateTheatreController } = require("../controllers/theatre.controller");
+const { validateTheatreCreateRequest, validateTheatreUpdateRequest } = require("../middlewares/theatre.middleware");
 
 const routes = (app) => {
   //this routes take express  app object as parameter
@@ -20,6 +20,15 @@ const routes = (app) => {
 
   // Get all theatres with query params
   app.get("/mba/api/v1/theatres", getAllQueryTheatresController);
+
+  // Update theatre route
+  app.put(
+    "/mba/api/v1/theatres/:id",
+    updateTheatreController
+  );
+
+  // Get all movies in a theatre
+  app.get("/mba/api/v1/theatres/:id/movies", getAllMoviesInTheatreController);
 
 
 };

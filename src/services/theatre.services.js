@@ -124,6 +124,52 @@ const getAllQueryTheatresService = async (data) => {
   }
 }
 
+const UpdateTheatreService = async(theatreId , data) => {
+  try {
+    const response = await Theatre.findByIdAndUpdate(theatreId, data, {
+      new: true,
+      runValidators: true,
+    });
+    if (!response) {
+      // no record found for the given id
+      throw {
+        err: "No theatre found for the given id",
+        code: STATUS.NOT_FOUND,
+      };
+    }
+    return response;
+  } catch (error) {
+    if (error.name == "ValidationError") {
+      let err = {};
+      Object.keys(error.errors).forEach((key) => {
+        err[key] = error.errors[key].message;
+      });
+      throw { err: err, code: STATUS.UNPROCESSABLE_ENTITY };
+    }
+    throw error;
+  }
+}
+
+const getAllMoviesInTheatreService = async (theatreId) => {
+  try {
+    const theatre = await Theatre.findById(theatreId);
+    if (!theatre) {
+      throw {
+        err: `No theatre found with id: ${theatreId}`,
+        code: STATUS.NOT_FOUND,
+      };
+    }
+    return theatre.movies; // returning only movies array of the theatre
+  } catch (error) {
+    if (error.name == "CastError") {
+      throw {
+        err: `Theatre id: ${theatreId} is not in proper format`,
+        code: STATUS.BAD_REQUEST,
+      };
+    } else
+      throw error;
+  }
+};
 
 module.exports = {
   createTheatreService,
@@ -131,4 +177,6 @@ module.exports = {
   getTheatreByIdService,
   getAllTheatresService,
   getAllQueryTheatresService,
+  UpdateTheatreService,
+  getAllMoviesInTheatreService,
 };

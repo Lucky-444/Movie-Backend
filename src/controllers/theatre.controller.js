@@ -1,6 +1,6 @@
 const Theatre = require("../models/theatre.model");
 const STATUS = require("../others/constants").STATUS;
-const { createTheatreService, deleteTheatreService, getTheatreByIdService, getAllTheatresService, getAllQueryTheatresService } = require("../services/theatre.services");
+const { createTheatreService, deleteTheatreService, getTheatreByIdService, getAllTheatresService, getAllQueryTheatresService, getAllMoviesInTheatreService, UpdateTheatreService } = require("../services/theatre.services");
 const {
   successResponseBody,
   errorResponseBody,
@@ -31,6 +31,12 @@ const deleteTheatreController = async (req, res) => {
     const theatreId = req.params.id;
     const response = await deleteTheatreService(theatreId);
 
+    if(!response){
+      errorResponseBody.err = `No theatre found with id: ${theatreId}`;
+      errorResponseBody.message = "Error deleting in theatre";
+      return res.status(404).json(errorResponseBody);
+    }
+
     return res
       .status(200)
       .json(success("Theatre deleted successfully", response));
@@ -48,6 +54,13 @@ const getTheatreByIdController = async (req, res) => {
   try {
     const theatreId = req.params.id;
     const response = await getTheatreByIdService(theatreId);
+
+    if(response.err){
+      errorResponseBody.err = response.err;
+      errorResponseBody.message = "Error fetching theatre";
+      return res.status(400).json(errorResponseBody);
+    }
+
     return res
       .status(200)
       .json(success("Theatre fetched successfully", response));
@@ -89,10 +102,67 @@ const getAllQueryTheatresController = async (req, res) => {
   }
 };
 
+
+const updateTheatreController = async (req, res) => {
+
+  try { 
+    const theatreId = req.params.id;
+    const theatreData = req.body;
+    const response = await UpdateTheatreService(theatreId, theatreData);
+
+    if(response.err){
+      errorResponseBody.err = response.err;
+      errorResponseBody.message = "Error updating theatre";
+      return res.status(400).json(errorResponseBody);
+    }
+
+    return res
+      .status(200)
+      .json(success("Theatre updated successfully", response));
+  } catch (error) {
+    console.log("Error Occurred In UpdateTheatreController", error);
+    return res.status(error.code || STATUS.INTERNAL_SERVER_ERROR).json(
+      failure("Error updating theatre", error.err || error.message)
+    );
+  }
+};
+
+const getAllMoviesInTheatreController = async (req, res) => {
+  // to be implemented later
+  try {
+    const theatreId = req.params.id;
+    const response = await getAllMoviesInTheatreService(theatreId);
+
+    if(response.err){
+      errorResponseBody.err = response.err;
+      errorResponseBody.message = "Error fetching movies in theatre";
+      return res.status(400).json(errorResponseBody);
+    }
+
+    return res
+      .status(STATUS.OK)
+      .json(success("Movies in theatre fetched successfully", response));
+  } catch (error) {
+    console.log("Error Occurred In GetAllMoviesInTheatreController", error);
+    return res.status(error.code || STATUS.INTERNAL_SERVER_ERROR).json(
+      failure("Error fetching movies in theatre", error.err || error.message)
+    );
+  }
+};
+
+
+
+
+
+
+
+
 module.exports = {
   createTheatreController,
   deleteTheatreController,
   getTheatreByIdController,
   getAllTheatresController,
   getAllQueryTheatresController,
+  updateTheatreController,
+  getAllMoviesInTheatreController,
 };

@@ -28,6 +28,25 @@ const validateTheatreCreateRequest = async (req, res, next) => {
   next(); // everything is fine move to the next middleware
 };
 
+const validateTheatreUpdateRequest = async (req, res, next) => {
+  // validate the presence of name
+  if (req.body.name !== undefined && req.body.name.length == 0) {
+    errorResponseBody.err = "The name of the theatre cannot be empty";
+    return res.status(400).json(errorResponseBody);
+  }
+  // validation for the presence of pincode
+  if (req.body.pincode !== undefined && req.body.pincode.length == 0) {
+    errorResponseBody.err = "The pincode of the theatre cannot be empty";
+    return res.status(400).json(errorResponseBody);
+  }
+  // validation for the presence of city
+  if (req.body.city !== undefined && req.body.city.length == 0) {
+    errorResponseBody.err = "The city of the theatre cannot be empty";
+    return res.status(400).json(errorResponseBody);
+  }
+  next(); // everything is fine move to the next middleware
+};
+
 const validateUpdateMoviesRequest = async (req, res, next) => {
   // validattion of insert parameter
   if (req.body.insert == undefined) {
@@ -57,4 +76,5 @@ const validateUpdateMoviesRequest = async (req, res, next) => {
 module.exports = {
   validateTheatreCreateRequest,
   validateUpdateMoviesRequest,
+  validateTheatreUpdateRequest,
 };
