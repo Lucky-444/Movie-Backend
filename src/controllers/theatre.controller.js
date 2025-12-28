@@ -1,6 +1,15 @@
 const Theatre = require("../models/theatre.model");
 const STATUS = require("../others/constants").STATUS;
-const { createTheatreService, deleteTheatreService, getTheatreByIdService, getAllTheatresService, getAllQueryTheatresService, getAllMoviesInTheatreService, UpdateTheatreService } = require("../services/theatre.services");
+const {
+  createTheatreService,
+  deleteTheatreService,
+  getTheatreByIdService,
+  getAllTheatresService,
+  getAllQueryTheatresService,
+  getAllMoviesInTheatreService,
+  UpdateTheatreService,
+  updateMoviesInTheatres,
+} = require("../services/theatre.services");
 const {
   successResponseBody,
   errorResponseBody,
@@ -150,7 +159,25 @@ const getAllMoviesInTheatreController = async (req, res) => {
   }
 };
 
-
+const updateMoviesController = async (req, res) => {
+  try {
+    const response = await updateMoviesInTheatres(
+      req.params.id,
+      req.body.movieIds,
+      req.body.insert
+    );
+    successResponseBody.data = response;
+    successResponseBody.message = "Successfully updated movies in the theatre";
+    return res.status(STATUS.OK).json(successResponseBody);
+  } catch (error) {
+    if (error.err) {
+      errorResponseBody.err = error.err;
+      return res.status(error.code).json(errorResponseBody);
+    }
+    errorResponseBody.err = error;
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+  }
+};
 
 
 
@@ -165,4 +192,5 @@ module.exports = {
   getAllQueryTheatresController,
   updateTheatreController,
   getAllMoviesInTheatreController,
+  updateMoviesController,
 };

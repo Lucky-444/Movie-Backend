@@ -34,5 +34,31 @@ SCHEMA FIELDS:
 - owner: ObjectId (reference to User model, required)
 
 
+/***main important ***/
+we will try to create association between Theater and Movie models such that each Theater can have multiple Movies associated with it. This will allow us to efficiently manage and query the movies being shown in each theater.
+
+and we will create an endpoint to fetch all movies being shown in a specific theater.
+and all the theatres running that movies
+
+we intend to set a relationship between the Theater and Movie models using Mongoose's referencing system. This association will enable us to link multiple movies to a single theater, facilitating efficient data retrieval and management.
+
+A theatre has many movies 
+
+we wll create meaning full endpoints from users prospective
+then we will create some endpoints that will used by admin to manage the association between theaters and movies.
+
+APIS are like below
+1. GET /mba/api/v1/theatres/:id/movies : Fetch all movies being shown in a specific theater.
+2. GET /mba/api/v1/movies/:id/theatres : Fetch all theatres running a specific movie.
+3. PUT /mba/api/v1/theatres/:id : Update theater details including the list of movies being shown. or add new movies to the theater's movie list.
+4. DELETE /mba/api/v1/theatres/:theatreId/movies/:movieId : Remove a specific movie from a theater's list of movies.
+5. GET /mba/api/v1/theatres/:id/movies/:id : Fetch details of a specific movie being shown in a specific theater.
+
+
+/***concept of database references and associations in MongoDB using Mongoose. In this case, we are establishing a one-to-many relationship between Theatres and Movies, where a single Theatre can have multiple Movies associated with it. This is achieved through the use of ObjectId references in the Theatre schema. and that single movie can will be running in multiple theaters also ***/
+
+/*** this is the association we will create ***/
+
+
 
 

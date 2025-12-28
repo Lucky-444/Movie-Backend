@@ -171,6 +171,41 @@ const getAllMoviesInTheatreService = async (theatreId) => {
   }
 };
 
+const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
+  try {
+    let theatre;
+    if (insert) {
+      // we need to add movies
+      theatre = await Theatre.findByIdAndUpdate(
+        { _id: theatreId },
+        { $addToSet: { movies: { $each: movieIds } } },
+        { new: true }
+      );
+    } else {
+      // we need to remove movies
+      theatre = await Theatre.findByIdAndUpdate(
+        { _id: theatreId },
+        { $pull: { movies: { $in: movieIds } } },
+        { new: true }
+      );
+    }
+
+    return theatre.populate("movies");
+  } catch (error) {
+    if (error.name == "TypeError") {
+      throw {
+        code: STATUS.NOT_FOUND,
+        err: "No theatre found for the given id",
+      };
+    }
+    console.log("Error is", error);
+    throw error;
+  }
+};
+
+
+
+
 module.exports = {
   createTheatreService,
   deleteTheatreService,
@@ -179,4 +214,5 @@ module.exports = {
   getAllQueryTheatresService,
   UpdateTheatreService,
   getAllMoviesInTheatreService,
+  updateMoviesInTheatres,
 };
