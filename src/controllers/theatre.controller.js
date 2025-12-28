@@ -6,6 +6,8 @@ const {
   errorResponseBody,
 } = require("../utils/responseBody");
 const { success, failure } = require("../utils/newResponse");
+
+
 const createTheatreController = async (req, res) => {
   try {
     const theatreData = req.body;
