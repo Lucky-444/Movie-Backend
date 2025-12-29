@@ -194,18 +194,38 @@ const getAllMoviesInTheatreService = async (theatreId) => {
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
   try {
     let theatre;
+
+    // insert === true → we want to ADD movies
     if (insert) {
-      // we need to add movies
+      // Find theatre by id and update it
       theatre = await Theatre.findByIdAndUpdate(
         { _id: theatreId },
-        { $addToSet: { movies: { $each: movieIds } } },
+
+        // $addToSet → add values to array WITHOUT creating duplicates
+        // $each → lets us add multiple movieIds at once
+        {
+          $addToSet: {
+            movies: { $each: movieIds },
+          },
+        },
+
+        // new: true → return the updated theatre document
         { new: true }
       );
     } else {
-      // we need to remove movies
+      // insert === false → we want to REMOVE movies
       theatre = await Theatre.findByIdAndUpdate(
         { _id: theatreId },
-        { $pull: { movies: { $in: movieIds } } },
+
+        // $pull → remove values from array
+        // $in → remove any movieId that matches items in movieIds array
+        {
+          $pull: {
+            movies: { $in: movieIds },
+          },
+        },
+
+        // return updated theatre
         { new: true }
       );
     }
@@ -266,7 +286,7 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
     return response.movies.indexOf(movieId) != -1;
     //   response.movies.includes(movieId);
     //   How it works
-    //   Returns true if the value exists 
+    //   Returns true if the value exists
     //   Returns false if not
   } catch (error) {
     console.log(error);

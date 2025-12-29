@@ -70,7 +70,80 @@ For example, a request to GET /mba/api/v1/theaters?page=2&limit=5 would return t
 we will modify the GET /mba/api/v1/theaters endpoint to accept these query parameters and adjust the database query accordingly. We will also include metadata in the response to provide information about the total number of records, total pages, current page, and records per page. ****/
 
 
+/mongoose has a find function which expects a json as input parameters
+if object is empty then  {} = returning all data
+if {} object is not empty then based on key value pair present in the object 
+mongoose does filtration on the database 
+
+the key is generally the attribute name of the document of the collection 
+and in value of the pair we put some custom value to it
+
+all those documents with given keys and corresponding values are found and then we return that data 
+/
+
+<!-- QUERY PARAMS : -->
+for query params we dont need different routes
+due to excess amount of combination that may occur
+due to query params we can not define so many routes so the query params 
+are considered differently and the route will be the route except them 
+Query params are NOT part of the route.
+there can be many combinations
+we can’t create routes for every one of them
+Everything after ? is optional filtering, not routing:
+All of these hit the same route handler:
+
+We do NOT want to create routes like:
+
+/api/theatres/city/Bhubaneswar
+/api/theatres/city/Cuttack/page/2
+/api/theatres/page/3/limit/10/sort/name
 
 
+That becomes messy, hard to maintain, and impossible to scale.
+
+Because filters are:
+
+optional
+
+flexible
+
+combinable
+
+So instead of infinite routes, we have one route + multiple filters.
+Query params are not part of the route.
+They are used for filtering, sorting, and pagination because there can be many combinations, and creating separate routes for each would be impossible.
+The route remains the same — only the query changes.
+
+<!-- End of query params -->
+
+
+//**AUTHENTICATION AND AUTHORIZATION **//
+now after the setup of theatre and Movies resource , we want to start Authentication and Authorization Part 
+
+1.Understand Authentication and Authorization
+2.Token Based Authentication
+
+Set Up model for User Collection
+Apis For User Registrations (for New Users); 
+Api's for User Login (Basic -> Modified -> Token Based Auth);
+Secure Storage Of Passwords
+Api's for password Reset 
+
+__AUTHORIZATION__ 
+Registration & set up of client and Admins 
+
+
+BOTH Authentication and Authorization are are often USed as conjuction with each Other in terms Of security 
+Both Terms are very Different with totally Different Concepts 
+The Big Difference Btw Gaining SuccessFull Entrance To a place and WHat you are allowed to do inside To understand the different
+
+
+__AUTHENTICATION__
+It is the process of verifying the identity of a User by obtaining their credentials and Use those to verify the User is valid Or not 
+Authentication Always Comes Before Authorization 
+We are Already Familier With process of authentication Becoz most of US perform it everyday 
+most of the things on internet becomes accessible after authenticating to the app 
+How ever once You AUthenticate There are many decision that happens Simultaneously in the backgroud thanks to secret power of Admin 
+AUthentication Factors determine the varius elements and system use to verify ones identity and prior to granting Him access
 
 
