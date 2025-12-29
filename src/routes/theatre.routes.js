@@ -1,4 +1,4 @@
-const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController, getAllMoviesInTheatreController, updateTheatreController, updateMoviesController } = require("../controllers/theatre.controller");
+const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController, getAllMoviesInTheatreController, updateTheatreController, updateMoviesController, checkMovieInATheatreController } = require("../controllers/theatre.controller");
 const { validateTheatreCreateRequest, validateTheatreUpdateRequest, validateUpdateMoviesRequest } = require("../middlewares/theatre.middleware");
 
 const routes = (app) => {
@@ -32,6 +32,9 @@ const routes = (app) => {
 
   // Update movies in a theatre
   app.patch("/mba/api/v1/theatres/:id/movies",validateUpdateMoviesRequest , updateMoviesController);
+
+  // Check if a movie is present in a theatre
+  app.get("/mba/api/v1/theatres/:theatreId/movies/:movieId/check", checkMovieInATheatreController);
 
 };
 

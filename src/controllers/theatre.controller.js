@@ -9,6 +9,7 @@ const {
   getAllMoviesInTheatreService,
   UpdateTheatreService,
   updateMoviesInTheatres,
+  checkMovieInATheatre,
 } = require("../services/theatre.services");
 const {
   successResponseBody,
@@ -179,11 +180,38 @@ const updateMoviesController = async (req, res) => {
   }
 };
 
+const checkMovieInATheatreController = async (req, res) => {
+  try {
+    const theatreId = req.params.theatreId;
+    const movieId = req.params.movieId;
+    const response = await checkMovieInATheatre(theatreId, movieId);
 
+    if(response.err){
+      return res.status(response.code).json(
+        failure("Error checking movie in theatre", response.err)
+      );
+    }
 
+    return res
+      .status(STATUS.OK)
+      .json(
+        success("Successfully checked if movie is present in the theatre", {
+          isPresent: response,
+        })
+      );
+  } catch (error) {
+    console.log("Error Occurred In CheckMovieInATheatreController", error);
+    if(error.err){
+      return res.status(error.code).json(
+        failure("Error checking movie in theatre", error.err)
+      );
+    }
 
-
-
+    return res.status(error.code || STATUS.INTERNAL_SERVER_ERROR).json(
+      failure("Error checking movie in theatre", error.err || error.message)
+    );
+  }
+};
 module.exports = {
   createTheatreController,
   deleteTheatreController,
@@ -193,4 +221,5 @@ module.exports = {
   updateTheatreController,
   getAllMoviesInTheatreController,
   updateMoviesController,
+  checkMovieInATheatreController,
 };

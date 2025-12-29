@@ -1,4 +1,4 @@
-
+/***SOFTWARE DESIGN PATTERN USED: MVC (MODEL VIEW CONTROLLER) ***/
 
 /***For Theater Backend ***/
 setUp schema and model for Theaters with fields:
@@ -58,6 +58,18 @@ APIS are like below
 /***concept of database references and associations in MongoDB using Mongoose. In this case, we are establishing a one-to-many relationship between Theatres and Movies, where a single Theatre can have multiple Movies associated with it. This is achieved through the use of ObjectId references in the Theatre schema. and that single movie can will be running in multiple theaters also ***/
 
 /*** this is the association we will create ***/
+
+
+/***PAGINATION : 
+we will implement pagination for the GET /mba/api/v1/theaters endpoint to efficiently handle large datasets and improve performance. Pagination allows us to limit the number of records returned in a single response, making it easier for clients to consume the data.
+when we google search then we don;t get all results in one page we get some results and then we can go to next page to get more results. we hardly get 9 - 10 results in one page.then we have to click on next page to get more results. this is called pagination.
+To implement pagination, we will use query parameters to specify the page number and the number of records per page. The two common parameters used for pagination are:
+- page: The current page number (default is 1)
+- limit: The number of records to return per page (default is 10)
+For example, a request to GET /mba/api/v1/theaters?page=2&limit=5 would return the second page of theaters with 5 theaters per page.
+we will modify the GET /mba/api/v1/theaters endpoint to accept these query parameters and adjust the database query accordingly. We will also include metadata in the response to provide information about the total number of records, total pages, current page, and records per page. ****/
+
+
 
 
 
