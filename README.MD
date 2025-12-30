@@ -146,4 +146,93 @@ most of the things on internet becomes accessible after authenticating to the ap
 How ever once You AUthenticate There are many decision that happens Simultaneously in the backgroud thanks to secret power of Admin 
 AUthentication Factors determine the varius elements and system use to verify ones identity and prior to granting Him access
 
+A User identity can be determined by 
+what he/she Knows
+what he/she has
+what he/she is
+and so on 
+
+__FORMALLY AUTHORIZATION__
+AUthorization is the proces of allowing an authenticated user to access by checking whether the user has acess rights by granting or denying specific permissions to an authenticated USer
+
+authorization on other hands occurs after your identity is successfuly authenticated to the system
+Which Ultimately Gives you full permission to acess the resources such as files , databases , locations and almost anything according to your ROle
+This is called ROLE BASED AUTHORIZATION C(RBAC) ;
+
+In simple Terms authorization determines your ability to acess the system and &upto what extent
+Once Your IDENTITY is verified By the system after successfull authentication you are then authorize to acess the resource of the system
+Once You Authenticate You are then Granted authorization or permission to perform certain allowed Tasks . in most cases an adminstrator of the system provides permission through Use of controll 
+SYstem ADMINSTRATOR Give permission to acess someone and granting permission or revoking permissions do
+AUthentication factors required for authorization may varying depending on security 
+
+
+//EX : when we try to authenticate our bank account then  successfull authenticationg will not give you the identity to look into other customers account or withdrawl money that is not your money 
+so authentication does not gives You "keys to castle" 
+
+
+//in summary 
+authentication grants You -> considerations of sorts if you cant authenticate successfully  you are no longer going to be considered
+The conversation between you and aplication you want to acess will be very short resulting in denied acess  
+
+authorization : however gives you the actual ability to perform allowed functions once you authorized 
+
+EX : -> a bank customer representative logged on as a bank employee can acess many accounts and performs additional Features 
+But they wont be given acess to withdraw money for any one 
+
+Authentication is First come and AUthorization comes aFter sucessfull authentication 
+
+/**types of authentication ***/
+- Authentication recognise User 
+1. password based (this is most common way of Authentication); 
+2. Multifactor authentication (ex : captcha , security qn , facial recognition , recovery id , ) : we use two or more ways to authenticate a user 
+in a single time 
+3. OTP based : here we dont use a pre saved passoword instead we use email , number to get a unique code as one time password , this OTP changes for evry iteration 
+4. 3rd party : this involves a 3rd part that complete the process of autherntication and does not have any credentials from the usr side for op
+ex : google Login , github login , facebook login 
+5. Biomatric Authentication : this  involves Biological characterstics of a persoon like fingerprint 
+6. Token Based AUthentication : 
+
+__TOKEN BASED AUTHENTICATION__ 
+inorder to implement token based authentication we follow the following steps 
+1. the user who is already registerd to the app try to sign in 
+2. if the user gives correct credentials tehn the server returns a specail and Unique tokens to the User (client app) . It is the responsibility of the client to store the tokens 
+3. Every Time the client wants to acess the resource which is protected by Authentication Layer then inorder to acess the resource the client must send this token alomng with request 
+
+4. then for every requeests recieved for the protected resource the server checked if the client has sent a token which is valid as wll or not , if yes server grants acess to the resource else denied  
+5. Token has a certain expiry as well as so we have to renew it 
+
+Generally we USe JWT token 
+
+__JWT TOEKEN__
+jwt token is a mechanism for user/client authiorization in most web app todays
+- it is compact
+- it is secure (digitaly signed by private key or public Key); 
+- The purpose of JWT is Not to hide data but to ensure authenticity of the data
+- Using JWT Token makes the mechanisms stateless and servers does not need to keep track of tokens assignd to user 
+
+STRUCTURE is : 
+         [header] : the type of token and algorithm to sign in the payload
+         [payload] : actual data to be stored
+         [signature] : servers use the signature to verify whether the payload has been tampered or not 
+
+
+
+***SCHEMA OF USER MODEL***
+_id
+email Id : a unique valid Email Id of the User 
+password : a strong password for the account
+Timestamps : createdAT , UpdatedAt 
+UserType : Role of the User
+UserStatus : pending , approved , depricated 
+
+
+
+
+
+
+
+
+
+
+
 

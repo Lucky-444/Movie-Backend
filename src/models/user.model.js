@@ -6,19 +6,19 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, " name is Required"], 
       unique: true,
     },
     email: {
-      type: String,
-      required: true,
-      unique: true,
+      type: String,          // value must be a string
+      required: [true , "email is required"],    // must be provided (cannot be null / missing)
+      unique: true,          // no two users can have the same email in the DB
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email",
-      ],
-      lowercase: true,
-      trim: true,
+      ],                     // regex validation
+      lowercase: true,       // automatically converts to lowercase
+      trim: true,            // removes spaces from start & end
     },
     password: {
       type: String,
@@ -50,25 +50,6 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-userSchema.pre("save", async function (next) {
-  // a trigger to encrypt the plain password before saving the user
-  const hash = await bcrypt.hash(this.password, 10);
-  this.password = hash;
-  next();
-});
-
-/**
- * This is going to be an instance method for user, to compare a password
- * with the stored encrypted password
- * @param plainPassword -> input password given by user in sign in request
- * @returns boolean denoting whether passwords are same or not ?
- */
-userSchema.methods.isValidPassword = async function (plainPassword) {
-  const currentUser = this;
-  const compare = await bcrypt.compare(plainPassword, currentUser.password);
-  return compare;
-};
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
