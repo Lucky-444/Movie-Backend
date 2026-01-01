@@ -229,7 +229,9 @@ UserStatus : pending , approved , depricated
 ***BCRYPT***
 we would like to encrypt the password and store the encrypted passoword and we need to use the encrypted password only to sign in the user as well 
 
-currently whetehr we are a customer or client the user gets auto approved but we need to change the behaviour such that only customers get default approved and admins and clients are get pending status 
+currently whetehr we are a customer or client the user gets auto approved but we need to change the behaviour such that only customers get default approved a
+and admins and clients are get pending status 
+
 
 
 
