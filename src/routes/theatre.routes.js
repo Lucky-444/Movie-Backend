@@ -1,6 +1,8 @@
 const { createTheatreController, deleteTheatreController, getTheatreByIdController, getAllTheatresController, getAllQueryTheatresController, getAllMoviesInTheatreController, updateTheatreController, updateMoviesController, checkMovieInATheatreController } = require("../controllers/theatre.controller");
 const { validateTheatreCreateRequest, validateTheatreUpdateRequest, validateUpdateMoviesRequest } = require("../middlewares/theatre.middleware");
 
+const {isAuthenticated } = require("../middlewares/auth.middlewares");
+
 const routes = (app) => {
   //this routes take express  app object as parameter
   app.post(
@@ -10,10 +12,10 @@ const routes = (app) => {
   );
 
   // Delete theatre route
-  app.delete("/mba/api/v1/theatres/:id", deleteTheatreController);
+  app.delete("/mba/api/v1/theatres/:id", isAuthenticated, deleteTheatreController);
 
   // Get theatre by id route
-  app.get("/mba/api/v1/theatres/:id", getTheatreByIdController);
+  app.get("/mba/api/v1/theatres/:id",  getTheatreByIdController);
 
   // Get all theatres route
   app.get("/mba/api/v1/theatres/all", getAllTheatresController);

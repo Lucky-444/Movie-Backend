@@ -249,6 +249,27 @@ we are expecting the user to send email and password in the request body
 - Any other relevant claims or metadata as needed by the application.
 > ### This token is then sent to the client, which stores it (usually in local storage or cookies) and includes it in the Authorization header of subsequent requests to protected routes. The server verifies the token's signature and validity before granting access to the requested resources.###
 
+__VERIFYING JWT TOKEN__
+incase of JWT token we can send the token in request header
+whenever we are trying to acess a protected resource
+we need to send the token(which we recieve in Signin) in the authorization header as Bearer token
+On receiving the request the server will verify the token using the secret key
+if the token is valid then the server grants acess to the resource else it denies acess
+//EX : Authorization: Bearer <token>
+//EX : Authorization : ex-access-token-xyz <token>
+
+__LOGOUT__
+Two Ways to Handle Logout with JWT:
+//By deleting the token on the client side (local storage or cookies || either token is expired or user manually delete it)
+
+
+__RESET PASSWORD__
+To implement a secure password reset functionality, we will follow these steps:
+they need to provide their registered email address.and previously set password
+otherwise not 
+if previously set password got matched then we go forward 
+and make the user to set new password
+        
 
 
 

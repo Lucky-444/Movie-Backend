@@ -62,18 +62,22 @@ const validateSigninRequest = async (req, res, next) => {
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    const token = req.headers["x-access-token"];
+    // const token = req.headers["x-access-token"];
+    //you can also send token via cookies
+    const token = req.cookies.token;
+
     if (!token) {
-      errorResponseBody.err = "No token provided";
+      errorResponseBody.err = "No token provided || Your session has expired || Please signin again";
       return res.status(STATUS.FORBIDDEN).json(errorResponseBody);
     }
     const response = jwt.verify(token, process.env.AUTH_KEY);
     if (!response) {
-      errorResponseBody.err = "Token not verified";
+      errorResponseBody.err = "Token not verified"; 
       return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
     }
     const user = await userService.getUserById(response.id);
     req.user = user.id;
+
     next();
   } catch (error) {
     if (error.name == "JsonWebTokenError") {
@@ -88,6 +92,7 @@ const isAuthenticated = async (req, res, next) => {
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
   }
 };
+
 
 const validateResetPasswordRequest = (req, res, next) => {
   // validate old password presence

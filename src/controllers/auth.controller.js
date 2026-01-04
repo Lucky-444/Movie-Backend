@@ -1,12 +1,15 @@
 const jwt = require("jsonwebtoken");
 
-
 const {
   successResponseBody,
   errorResponseBody,
 } = require("../utils/responsebody");
 
-const { createUser, getUserByEmail, getUserById } = require("../services/user.service");
+const {
+  createUser,
+  getUserByEmail,
+  getUserById,
+} = require("../services/user.service");
 
 const signup = async (req, res) => {
   try {
@@ -46,13 +49,21 @@ const signin = async (req, res) => {
     /**
      * And Later on while verifying the token
      * const response = jwt.verify(token, process.env.AUTH_KEY);
-    * const user = await userService.getUserById(response.id);
- */
+     * const user = await userService.getUserById(response.id);
+     */
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.AUTH_KEY,
       { expiresIn: "1h" }
     );
+
+    res.cookie("token", token, {
+      httpOnly: true, // JS cannot read it (XSS protection)
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: "strict", // prevents CSRF in most cases
+      maxAge: 60 * 60 * 1000, // 1 hour in ms
+    });
+
     successResponseBody.message = "Successfully logged in";
     successResponseBody.data = {
       email: user.email,
@@ -73,10 +84,21 @@ const signin = async (req, res) => {
   }
 };
 
-
+/***
+ * Reset Password Controller
+ * Get the user from req.user -> set by auth middleware
+ * Compare old password and if correct allow to set new password
+ * Save the user
+ * 
+ * req body = {
+ * oldPassword: "oldpassword",
+ * newPassword: "newpassword"
+ * }
+ */
 
 const resetPassword = async (req, res) => {
   try {
+  
     const user = await getUserById(req.user);
     const isOldPasswordCorrect = await user.isValidPassword(
       req.body.oldPassword
