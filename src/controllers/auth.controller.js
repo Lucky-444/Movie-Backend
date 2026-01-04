@@ -15,7 +15,10 @@ const signup = async (req, res) => {
     successResponseBody.message = "Successfully registered a user";
     return res.status(201).json(successResponseBody);
   } catch (error) {
+    console.log(error);
     if (error.err) {
+      //receving err object and status code from service
+      //so error.err is set to response body and status code is set accordingly
       errorResponseBody.err = error.err;
       return res.status(error.code).json(errorResponseBody);
     }

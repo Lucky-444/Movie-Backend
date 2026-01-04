@@ -3,6 +3,18 @@ const { USER_ROLE, USER_STATUS, STATUS } = require("../utils/constants");
 
 const createUser = async (data) => {
   try {
+    //If the user has no role provided, OR their role is customer…
+    //So two cases:
+    //data.userRole is undefined/null
+    //data.userRole is 'customer'
+    // If a status is provided AND it is NOT approved…
+
+    //Why Throw Error
+    //Because customers can only have approved status when created
+    //Customers are always approved by default. They cannot be pending or rejected.
+    //So if someone is trying to create a customer with pending/rejected status, block it.
+    //So customers must only ever have:
+    //userStatus = approved
     if (!data.userRole || data.userRole == USER_ROLE.customer) {
       if (data.userStatus && data.userStatus != USER_STATUS.approved) {
         throw {
@@ -11,9 +23,18 @@ const createUser = async (data) => {
         };
       }
     }
+
+    //If the user has a role AND it's NOT a customer,
+    //automatically set their status to pending.
+
+    //So admins, managers, etc. must be reviewed first.
     if (data.userRole && data.userRole != USER_ROLE.customer) {
       data.userStatus = USER_STATUS.pending;
     }
+
+    //To enforce business rules in backend so nobody can create:
+    // customers with pending/rejected status
+    // admins with approved immediately
 
     const response = await User.create(data);
     console.log(response);
@@ -25,11 +46,13 @@ const createUser = async (data) => {
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
       });
+      //passing err object and 422 status code to the controller
       throw { err: err, code: 422 };
     }
     throw error;
   }
 };
+
 
 const getUserByEmail = async (email) => {
   try {
@@ -58,6 +81,8 @@ const getUserById = async (id) => {
     throw error;
   }
 };
+
+
 
 const updateUserRoleOrStatus = async (data, userId) => {
   try {

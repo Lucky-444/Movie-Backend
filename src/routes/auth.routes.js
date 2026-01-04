@@ -1,11 +1,12 @@
-const { signup, signin, resetPassword } = require("../controllers/auth.controller")
+const { signup, signin, resetPassword } = require("../controllers/auth.controller");
+const { validateSignupRequest, validateSigninRequest, validateResetPasswordRequest } = require("../middlewares/auth.middlewares");
 
 const routes = (app) => {
-         app.post("/mba/api/v1/auth/signup" , signup); 
+         app.post("/mba/api/v1/auth/signup" , validateSignupRequest, signup); 
 
-         app.post("/mba/api/v1/auth/signin" , signin); 
+         app.post("/mba/api/v1/auth/signin" , validateSigninRequest, signin); 
 
-         app.patch("/mba/api/v1/auth/reset" , resetPassword);
+         app.patch("/mba/api/v1/auth/reset" ,validateResetPasswordRequest, resetPassword);
 }
 
 module.exports = routes; 

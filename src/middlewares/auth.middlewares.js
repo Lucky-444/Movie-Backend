@@ -33,6 +33,8 @@ const validateSignupRequest = async (req, res, next) => {
   next();
 };
 
+
+
 /**
  * validator for user signin
  * @param req -> http request object
@@ -132,6 +134,8 @@ const isAdminOrClient = async (req, res, next) => {
   }
   next();
 };
+
+
 
 module.exports = {
   validateSignupRequest,
