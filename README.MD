@@ -274,6 +274,8 @@ __UPDATE USER DETAILS__
 we want to implement an endpoint that allows users to update their details .
 becoz of fact that our users will be having userRoles and userStatus so we need to update those details as well
 
+FOR IMPLEMENTING AUTHORIZATION we need to set up role based access control (RBAC) mechanism
+
 
 
 
