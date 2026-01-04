@@ -232,6 +232,22 @@ we would like to encrypt the password and store the encrypted passoword and we n
 currently whetehr we are a customer or client the user gets auto approved but we need to change the behaviour such that only customers get default approved a
 and admins and clients are get pending status 
 
+___JWT USES STEPS___
+we are expecting the user to send email and password in the request body
+1. we first verify if the email exists in the database or not
+2. if email exists then we compare the password sent by the user with the encrypted password stored in the database using bcrypt library
+3. if password matches then we create a JWT token using the user details and a secret key
+4. we send this token to the user as response
+5. the user stores this token in local storage or cookies
+6. for every request to protected routes the user sends this token in the Authorization header
+7. we verify this token using the secret key and if valid we grant access to the resource else we deny access
+> ### A Unique Token is generated for each user upon successful authentication. This token encapsulates essential user information and is digitally signed to ensure its integrity and authenticity. The token typically includes:
+- **User ID**: A unique identifier for the user.
+- **Expiration Time**: A timestamp indicating when the token will expire, enhancing security by limiting its validity period.
+- **Issued At**: A timestamp indicating when the token was issued.
+- **User Role**: Information about the user's role (e.g., admin, user) to facilitate role-based access control.
+- Any other relevant claims or metadata as needed by the application.
+> ### This token is then sent to the client, which stores it (usually in local storage or cookies) and includes it in the Authorization header of subsequent requests to protected routes. The server verifies the token's signature and validity before granting access to the requested resources.###
 
 
 

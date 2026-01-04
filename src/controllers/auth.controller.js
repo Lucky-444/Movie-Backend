@@ -30,16 +30,29 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   try {
     const user = await getUserByEmail(req.body.email);
+    //used our own instance method to validate password
+    // compares plain password with hashed password
+    //user -> gives current User Instance
     const isValidPassword = await user.isValidPassword(req.body.password);
+
     if (!isValidPassword) {
       throw { err: "Invalid password for the given email", code: 401 };
     }
+
+    console.log("User iS", user.id);
+
+    //this id returns string version of _id
+    //always stringify the id to avoid issues
+    /**
+     * And Later on while verifying the token
+     * const response = jwt.verify(token, process.env.AUTH_KEY);
+    * const user = await userService.getUserById(response.id);
+ */
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.AUTH_KEY,
       { expiresIn: "1h" }
     );
-
     successResponseBody.message = "Successfully logged in";
     successResponseBody.data = {
       email: user.email,
@@ -59,6 +72,8 @@ const signin = async (req, res) => {
     return res.status(500).json(errorResponseBody);
   }
 };
+
+
 
 const resetPassword = async (req, res) => {
   try {
