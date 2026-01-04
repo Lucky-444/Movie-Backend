@@ -1,12 +1,16 @@
 const { createMovie, deleteMovie, getMovies, updateMovieController, getQueryMovies } = require("../controllers/movie.controller");
+const { isAuthenticated, isAdminOrClient } = require("../middlewares/auth.middlewares");
 const validateMovie = require("../middlewares/movie.middlewares");
 
 const routes = (app) => {
   //this routes take express  app object as parameter
-  app.post("/mba/api/v1/movies", validateMovie, createMovie);
+  app.post("/mba/api/v1/movies",isAuthenticated, isAdminOrClient,  validateMovie, createMovie);
   app.get("/mba/api/v1/movies/:id", getMovies);
-  app.delete("/mba/api/v1/movies/:id", deleteMovie);
-  app.put("/mba/api/v1/movies/:id", validateMovie, updateMovieController);
+  app.delete("/mba/api/v1/movies/:id",isAuthenticated , isAdminOrClient, deleteMovie);
+
+  app.put("/mba/api/v1/movies/:id", isAuthenticated, isAdminOrClient, validateMovie, updateMovieController);
+
+  app.patch("/mba/api/v1/movies/:id", isAuthenticated, isAdminOrClient, validateMovie, updateMovieController);
   
   /** difference between put and patch Update
    * put - updates the entire resource
