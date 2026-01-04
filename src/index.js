@@ -9,6 +9,7 @@ const connectDB = require("./others/db");
 const movieRoutes = require("./routes/movie.routes");
 const theatreRoutes = require("./routes/theatre.routes");
 const authRoutes = require('../src/routes/auth.routes') ;
+const userRoutes = require('./routes/user.routes');
 
 // ALWAYS convert env to number or fallback
 const port = Number(process.env.PORT) || 3000;
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 movieRoutes(app);
 theatreRoutes(app);
 authRoutes(app);
+userRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

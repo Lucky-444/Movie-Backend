@@ -269,7 +269,10 @@ they need to provide their registered email address.and previously set password
 otherwise not 
 if previously set password got matched then we go forward 
 and make the user to set new password
-        
+
+__UPDATE USER DETAILS__
+we want to implement an endpoint that allows users to update their details .
+becoz of fact that our users will be having userRoles and userStatus so we need to update those details as well
 
 
 
