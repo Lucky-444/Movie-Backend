@@ -1,6 +1,7 @@
 const { STATUS } = require("../utils/constants");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { getTheatreByIdService } = require("../services/theatre.services");
+const { errorResponseBody } = require("../utils/responseBody");
 const validateBookingCreation = async (req, res, next) => {
   // Check if required fields are present
   if (!req.body.theatreId) {
@@ -14,10 +15,14 @@ const validateBookingCreation = async (req, res, next) => {
     return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
   }
   //Invalid or non-existing theatreId check
-  const theatreExists = await getTheatreByIdService(req.body.theatreId);
-  if (!theatreExists) {
-    errorResponseBody.err = "Theatre with given ID does not exist";
-    return res.status(STATUS.NOT_FOUND).json(errorResponseBody);
+  let theatreExists;
+  try {
+    theatreExists = await getTheatreByIdService(req.body.theatreId);
+  } catch (error) {
+    errorResponseBody.err = error.err || "Something went wrong";
+    return res
+      .status(error.code || STATUS.INTERNAL_SERVER_ERROR)
+      .json(errorResponseBody);
   }
 
   if (!req.body.movieId) {
@@ -33,6 +38,14 @@ const validateBookingCreation = async (req, res, next) => {
   if (!theatreExists.movies.includes(req.body.movieId)) {
     errorResponseBody.err = "Movie not available in the selected theatre";
     return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+  }
+
+  //for correct checking of objectId use isValid method of mongoose
+
+  if (theatreExists.movies.indexOf(req.body.movieId) == -1) {
+    errorResponseBody.err =
+      "Given movie is not available in the requested theatre";
+    return res.status(STATUS.NOT_FOUND).json(errorResponseBody);
   }
   //validate timing and noOfSeats
   if (!req.body.timing) {
