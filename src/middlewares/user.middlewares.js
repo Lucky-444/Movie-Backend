@@ -1,4 +1,4 @@
-const { errorResponseBody } = require("../utils/responsebody");
+const { errorResponseBody } = require("../utils/responseBody");
 const User = require("../models/user.model");
 const { USER_ROLE } = require("../utils/constants");
 

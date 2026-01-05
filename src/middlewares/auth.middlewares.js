@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const { errorResponseBody } = require("../utils/responsebody");
+const { errorResponseBody } = require("../utils/responseBody");
 const userService = require("../services/user.service");
 const { USER_ROLE, STATUS } = require("../utils/constants");
 

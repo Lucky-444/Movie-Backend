@@ -276,12 +276,22 @@ becoz of fact that our users will be having userRoles and userStatus so we need 
 
 FOR IMPLEMENTING AUTHORIZATION we need to set up role based access control (RBAC) mechanism
 
+__BOOKINGS__
+setUp schema and model for Bookings with fields:
+In order to setup bookings we need first understand the USecases
+for a booking we need to associate the booking with a user and a movie
+we can maintain status of the booking as well
 
-
-
-
-
-
+The Booking schema will include the following fields: 
+- Booking ID (unique identifier)
+- User ID (foreign key referencing User)
+- Movie ID (foreign key referencing Movie)
+- Theater ID (foreign key referencing Theater)
+- Showtime (date and time of the booking)
+- Seats Booked (array of seat numbers)
+- Total Price (calculated based on seat prices)
+- Booking Status (confirmed, cancelled, pending)
+- Timestamps (createdAt, updatedAt)
 
 
 

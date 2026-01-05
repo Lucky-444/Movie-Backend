@@ -23,6 +23,9 @@ const STATUS_CODES = {
   PAYMENT_REQUIRED: 402,
 };
 
+
+
+
 const BOOKING_STATUS = {
   cancelled: "CANCELLED",
   successfull: "SUCCESSFULL",
