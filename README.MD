@@ -322,9 +322,22 @@ __APIS FOR BOOKINGS__
             status: "confirmed",
             createdAt: Date
          }
+- PUT /bookings/:id - Update a booking
+         The Route will allow users to update their booking details, such as changing seats or showtime, before a certain cutoff time.
+         Route -> /mba/api/v1/bookings/:id
+         type -> PUT
+         request body -> {
+            seatsBooked: [String],
+            showtime: Date
+         }
+         response -> {
+            data : {} // store all the updated data of booking
+            bookingId: ObjectId,
+            status: "updated",
+            updatedAt: Date
+         }
 
 - GET /bookings - Get all bookings
 
 - GET /bookings/:id - Get a specific booking
-- PUT /bookings/:id - Update a booking
 - DELETE /bookings/:id - Delete a booking

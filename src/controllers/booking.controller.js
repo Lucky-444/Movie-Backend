@@ -2,7 +2,7 @@ const {
   errorResponseBody,
   successResponseBody,
 } = require("../utils/responseBody");
-const { createBookingService } = require("../services/booking.services");
+const { createBookingService, updateBookingService } = require("../services/booking.services");
 const { STATUS } = require("../utils/constants");
 const createBookingController = async (req, res) => {
   // Logic to create a booking
@@ -33,6 +33,28 @@ const createBookingController = async (req, res) => {
   }
 };
 
+const updateBookingController = async (req, res) => {
+  try {
+    const response = await updateBookingService(req.params.id, req.body);
+    successResponseBody.data = response;
+    successResponseBody.message = "Booking updated successfully";
+    res.status(STATUS.OK).json(successResponseBody);
+  } catch (error) {
+    console.error(error);
+
+    if (error.err) {
+      errorResponseBody.err = error.err;
+      return res
+        .status(error.code || STATUS.INTERNAL_SERVER_ERROR)
+        .json(errorResponseBody);
+    }
+
+    errorResponseBody.err = error.message || error;
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+  }
+};
+
 module.exports = {
   createBookingController,
+  updateBookingController,
 };

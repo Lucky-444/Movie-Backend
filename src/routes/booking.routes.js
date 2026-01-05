@@ -1,9 +1,11 @@
 const {
   createBookingController,
+  updateBookingController,
 } = require("../controllers/booking.controller");
 const { isAuthenticated } = require("../middlewares/auth.middlewares");
 const {
   validateBookingCreation,
+  canChangeStatus,
 } = require("../middlewares/booking.middlewares");
 
 const routes = (app) => {
@@ -13,6 +15,15 @@ const routes = (app) => {
     isAuthenticated,
     validateBookingCreation,
     createBookingController
+  );
+
+  //we add authorization middleware later
+  //add update booking route
+  app.patch(
+    "/mba/api/v1/bookings/:id",
+    isAuthenticated,
+    canChangeStatus,
+    updateBookingController
   );
 };
 

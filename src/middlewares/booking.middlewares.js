@@ -1,7 +1,8 @@
-const { STATUS } = require("../utils/constants");
+const { STATUS, USER_ROLE, BOOKING_STATUS } = require("../utils/constants");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { getTheatreByIdService } = require("../services/theatre.services");
 const { errorResponseBody } = require("../utils/responseBody");
+const { getUserById } = require("../services/user.service");
 const validateBookingCreation = async (req, res, next) => {
   // Check if required fields are present
   if (!req.body.theatreId) {
@@ -60,6 +61,31 @@ const validateBookingCreation = async (req, res, next) => {
   next();
 };
 
+const canChangeStatus = async (req, res, next) => {
+  try {
+    const user = await getUserById(req.user);
+
+    const isCustomer = user.userRole === USER_ROLE.customer;
+    const wantsToChangeStatus = "status" in req.body;
+    const notCancelling = req.body.status !== BOOKING_STATUS.cancelled;
+
+    if (isCustomer && wantsToChangeStatus && notCancelling) {
+      errorResponseBody.err =
+        "You are not allowed to change the booking status";
+      return res.status(STATUS.UNAUTHORIZED).json(errorResponseBody);
+    }
+
+    next();
+  } catch (error) {
+    errorResponseBody.err = error.err || "Something went wrong";
+    return res
+      .status(error.code || STATUS.INTERNAL_SERVER_ERROR)
+      .json(errorResponseBody);
+  }
+};
+
+
 module.exports = {
   validateBookingCreation,
+  canChangeStatus,
 };

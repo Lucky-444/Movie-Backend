@@ -24,8 +24,6 @@ const STATUS_CODES = {
 };
 
 
-
-
 const BOOKING_STATUS = {
   cancelled: "CANCELLED",
   successfull: "SUCCESSFULL",
