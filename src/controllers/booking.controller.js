@@ -7,6 +7,7 @@ const {
   updateBookingService,
   getBookings,
   getAllBookings,
+  getBookingByIdService,
 } = require("../services/booking.services");
 const { STATUS } = require("../utils/constants");
 const createBookingController = async (req, res) => {

@@ -48,7 +48,7 @@ const updateBookingService = async (id, data) => {
 
 const getBookings = async (data) => {
   try {
-    const booking = await Booking.findById({
+    const booking = await Booking.find({
       userId: data.userId,
     });
     return booking;
