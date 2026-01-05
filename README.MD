@@ -338,6 +338,16 @@ __APIS FOR BOOKINGS__
          }
 
 - GET /bookings - Get all bookings
+         The Route will retrieve all bookings for the authenticated user, with optional filters for date range, status, etc.
+         Route -> /mba/api/v1/bookings
+         type -> GET
+         query params -> {
+            status: String, // optional
+            startDate: Date, // optional
+            endDate: Date // optional
+         }
+         response -> {
+            data : [ {} ] // array of booking objects
+         }
 
 - GET /bookings/:id - Get a specific booking
-- DELETE /bookings/:id - Delete a booking

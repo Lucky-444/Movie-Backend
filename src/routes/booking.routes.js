@@ -1,8 +1,11 @@
 const {
   createBookingController,
   updateBookingController,
+  getBookingByIdController,
+  getAllBookingsController,
+  getBookingsController,
 } = require("../controllers/booking.controller");
-const { isAuthenticated } = require("../middlewares/auth.middlewares");
+const { isAuthenticated, isAdmin } = require("../middlewares/auth.middlewares");
 const {
   validateBookingCreation,
   canChangeStatus,
@@ -25,6 +28,25 @@ const routes = (app) => {
     canChangeStatus,
     updateBookingController
   );
+
+  //add get booking by id route
+  app.get(
+    "/mba/api/v1/bookings/:id",
+    isAuthenticated,
+    getBookingByIdController
+  );
+
+  //add get all bookings route
+  //this route is only for admin users
+  app.get(
+    "/mba/api/v1/bookings/all",
+    isAuthenticated,
+    isAdmin,
+    getAllBookingsController
+  );
+
+  //add get bookings for a user route
+  app.get("/mba/api/v1/bookings", isAuthenticated, getBookingsController);
 };
 
 module.exports = routes;
