@@ -293,5 +293,38 @@ The Booking schema will include the following fields:
 - Booking Status (confirmed, cancelled, pending)
 - Timestamps (createdAt, updatedAt)
 
+__PAYMENTS__ 
+setUp schema and model for Payments with fields:
+The Payment schema will include the following fields:
+- Payment ID (unique identifier)
+- Booking ID (foreign key referencing Booking)
+- Amount (total payment amount)
+- Status (payment status: pending, failed, success)
 
 
+__APIS FOR BOOKINGS__
+- POST /bookings - Create a new booking
+         The Route will accept booking details in the request body and create a new booking record in the database. It will also handle seat availability checks and payment processing.
+[inOrder to create booking the user must be authenticated]
+         Route -> /mba/api/v1/bookings
+         type -> POST
+         request body -> {
+            userId: ObjectId,
+            movieId: ObjectId,
+            theaterId: ObjectId,
+            showtime: Date,
+            seatsBooked: [String],
+            totalPrice: Number
+         }
+         response -> {
+            data : {} // store all the data of booking
+            bookingId: ObjectId,
+            status: "confirmed",
+            createdAt: Date
+         }
+
+- GET /bookings - Get all bookings
+
+- GET /bookings/:id - Get a specific booking
+- PUT /bookings/:id - Update a booking
+- DELETE /bookings/:id - Delete a booking
