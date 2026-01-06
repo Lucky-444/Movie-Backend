@@ -373,5 +373,45 @@ The Show schema will include the following fields:
 - Timestamps (createdAt, updatedAt)
 /***in Theatre Model we have a property [shows] which is an array of ObjectIds referencing the Show model . We can Build in This Way also ***/
 
-__APIS FOR SHOWS__
+//Now for Payment Details and Booking associate with Show Model as well
+__PAYMENT AND BOOKING ASSOCIATION__
+user -> Booking -> show -> Movie -> payment
+         |        -------------------------
+         |                 Make Payment 
+         |                             \
+      waiting State [pendingState];     \
+                                  \    |
+                                   \   | 
+                                    \  |
+                                 Payment Model
+                                 successFUll Payment 
+                                 Get The Ticket
+                                 convert the booking status to confirmed or successful
+
+/***once the Booking is intiated the booking status will be in pending state or waiting state 
+   until the payment is successfull this will remain for 5 mins if payment is not successfull within 5 mins then the booking will be cancelled automatically by the system and the seats will be released back to available seats pool***/
+
+   ![alt text](image.png)
+//EX : Booking Flow
+
+__ROUTE PAYMENTS__
+- POST /payments - Make a payment for a booking
+         The Route will handle payment processing for a specific booking. It will create a payment record and update the booking status upon successful payment.
+         [Route] -> /mba/api/v1/payments
+         [type] -> POST
+         request body -> {
+            bookingId: ObjectId,
+            amount: Number,
+         }
+         response -> {
+            data : {} // store all the payment data
+            paymentId: ObjectId,
+            status: "success",
+            err : {},
+            Message : "Payment Successful" || "Payment Failed",
+            createdAt: Date
+         }
+
+                              
+
 
