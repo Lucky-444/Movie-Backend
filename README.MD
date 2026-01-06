@@ -351,3 +351,27 @@ __APIS FOR BOOKINGS__
          }
 
 - GET /bookings/:id - Get a specific booking
+
+
+__SHOW MODEL__
+In Theatre Model we are just having list of movies that are being shown in that theatre
+it does not have any information about the showtime of the movie in that theatre and available seats and timings for that particular movie in that theatre
+what are the different showTime available for that movie in that theatre
+what'S the Hall/Screen number where that movie is being shown in that theatre
+//We have no idea about this information from the current Theater and Movie models
+
+so we setUp a New Model Called [Show] Model
+setUp schema and model for Shows with fields:
+The Show schema will include the following fields:
+- Show ID (unique identifier)
+- Movie ID (foreign key referencing Movie)
+- Theater ID (foreign key referencing Theater)
+- Showtime (date and time of the show)
+- Screen Number (the hall/screen number in the theater)
+- Available Seats (array of available seat numbers)
+- Price Per Seat (price for each seat in this show)
+- Timestamps (createdAt, updatedAt)
+/***in Theatre Model we have a property [shows] which is an array of ObjectIds referencing the Show model . We can Build in This Way also ***/
+
+__APIS FOR SHOWS__
+
