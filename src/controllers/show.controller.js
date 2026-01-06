@@ -47,4 +47,6 @@ const getShowsController = async (req, res, next) => {
 
 module.exports = {
   createShowController,
+  getShowsController,
+  
 };
