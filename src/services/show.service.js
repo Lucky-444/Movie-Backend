@@ -58,7 +58,52 @@ const getShowsService = async (data) => {
   }
 };
 
+const deleteShowService = async (showId) => {
+  try {
+    const response = await Show.findByIdAndDelete(showId);
+    if (!response) {
+      throw {
+        err: "Show not found",
+        code: STATUS.NOT_FOUND,
+      };
+    }
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateShowService = async (showId, updateData) => {
+  try {
+    const response = await Show.findByIdAndUpdate(showId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+    if (!response) {
+      throw {
+        err: "Show not found",
+        code: STATUS.NOT_FOUND,
+      };
+    }
+    return response;
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let err = {};
+      for (field in error.errors) {
+        err[field] = error.errors[field].message;
+      }
+      throw {
+        err,
+        code: STATUS.UNPROCESSABLE_ENTITY,
+      };
+    }
+    throw error;
+  }
+};
+
 module.exports = {
   createShowService,
   getShowsService,
+  deleteShowService,
+  updateShowService,
 };

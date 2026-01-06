@@ -13,14 +13,6 @@ const route = (app) => {
     update
   );
 
-  //Get allShows using Query Params
-  //Unauthenticated User can also access this API
-  app.get(
-    "/mba/api/v1/shows",
-    getShowsController
-  ); 
-
-  
 };
 
 module.exports = route;

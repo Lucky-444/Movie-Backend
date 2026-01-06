@@ -39,6 +39,28 @@ const validateCreateShowRequest = async (req, res, next) => {
   next();
 };
 
+/**Its job is to make sure that when someone updates a show, they cannot change:
+
+         theatreId
+
+         movieId
+
+Because once a show is created:
+
+         🎬 the movie is fixed
+         🏢 the theatre is fixed
+
+Otherwise things break (bookings, timings, availability, etc.) */
+const validateShowUpdateRequest = async (req, res, next) => {
+  if (req.body.theatreId || req.body.movieId) {
+    errorResponseBody.err =
+      "We cannot update theatre or movie for an already added show";
+    return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+  }
+  next();
+};
+
 module.exports = {
   validateCreateShowRequest,
+  validateShowUpdateRequest,
 };
