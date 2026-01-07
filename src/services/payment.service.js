@@ -223,7 +223,44 @@ const createPaymentService = async (paymentData) => {
   }
 };
 
-module.exports = { createPaymentService };
+const getPaymentById = async (id) => {
+    try {
+        const response = await Payment.findById(id).populate('booking');
+        if(!response) {
+            throw {
+                err: 'No payment record found',
+                code: STATUS.NOT_FOUND
+            }
+        }
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getAllPayments = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        let filter = {};
+        if(user.userRole != USER_ROLE.admin) {
+            filter.userId = user.id;
+        }
+        const bookings = await Booking.find(filter, 'id');
+
+        const payments = await Payment.find({booking: {$in: bookings}});
+        return payments;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+module.exports = { 
+  createPaymentService ,
+  getPaymentById,
+  getAllPayments,
+};
 
 /**const mongoose = require("mongoose");
 const Payment = require("../models/payment.model");
