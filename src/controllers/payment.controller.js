@@ -1,5 +1,6 @@
 const { createPaymentService } = require("../services/payment.service");
 const { STATUS, BOOKING_STATUS } = require("../utils/constants");
+const { errorResponseBody, successResponseBody } = require("../utils/responseBody");
 
 const createPaymentController = async (req, res) => {
   try {
@@ -13,8 +14,8 @@ const createPaymentController = async (req, res) => {
       return res.status(STATUS.GONE).json(errorResponseBody);
     }
 
-    if (response.status && response.status === BOOKING_STATUS.CANCELLED) {
-      errorResponseBody.message = "Payment failed, booking has been cancelled";
+    if (response.status && response.status === BOOKING_STATUS.cancelled) {
+      errorResponseBody.message = "Payment Cancelled  booking has been cancelled Please Try Again! pay the correct amount";
       errorResponseBody.err = "Payment failed";
       return res.status(STATUS.PAYMENT_REQUIRED).json(errorResponseBody);
     }
@@ -30,7 +31,7 @@ const createPaymentController = async (req, res) => {
       return res.status(error.code).json(errorResponseBody);
     }
     errorResponseBody.message = "Internal Server Error";
-    errorResponseBody.err = error.message;
+    errorResponseBody.err = error;
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
   }
 };

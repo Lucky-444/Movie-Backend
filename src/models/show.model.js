@@ -4,13 +4,13 @@ const showSchema = new mongoose.Schema(
   {
     theatreId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Theatre",
+      required: true,
     },
     movieId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Movie",
+      required: true,
     },
     timing: {
       type: String,
