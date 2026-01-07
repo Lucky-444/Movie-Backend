@@ -1,6 +1,7 @@
 const { createPaymentService } = require("../services/payment.service");
 const { STATUS, BOOKING_STATUS } = require("../utils/constants");
 const { errorResponseBody, successResponseBody } = require("../utils/responseBody");
+const {getAllPaymentsService , getPaymentById} = require("../services/payment.service");
 
 const createPaymentController = async (req, res) => {
   try {
@@ -38,7 +39,7 @@ const createPaymentController = async (req, res) => {
 
 const getPaymentDetailsById = async (req, res) => {
   try {
-    const response = await paymentService.getPaymentById(req.params.id);
+    const response = await getPaymentById(req.params.id);
     successResponseBody.data = response;
     successResponseBody.message =
       "Successfully fetched the booking and payment details";
@@ -55,7 +56,7 @@ const getPaymentDetailsById = async (req, res) => {
 
 const getAllPayments = async (req, res) => {
   try {
-    const response = await paymentService.getAllPayments(req.user);
+    const response = await getAllPaymentsService(req.user);
     successResponseBody.data = response;
     successResponseBody.message = "Successfully fetched all the payments";
     return res.status(STATUS.OK).json(successResponseBody);

@@ -6,7 +6,9 @@ const {
   STATUS,
   PAYMENT_STATUS,
   BOOKING_STATUS,
+  USER_ROLE,
 } = require("../utils/constants");
+const User = require("../models/user.model");
 
 /**
  * createPaymentService
@@ -239,7 +241,7 @@ const getPaymentById = async (id) => {
     }
 }
 
-const getAllPayments = async (userId) => {
+const getAllPaymentsService = async (userId) => {
     try {
         const user = await User.findById(userId);
         let filter = {};
@@ -259,7 +261,7 @@ const getAllPayments = async (userId) => {
 module.exports = { 
   createPaymentService ,
   getPaymentById,
-  getAllPayments,
+  getAllPaymentsService,
 };
 
 /**const mongoose = require("mongoose");
