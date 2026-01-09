@@ -192,6 +192,12 @@ const checkMovieInATheatreController = async (req, res) => {
       );
     }
 
+    sendMail(
+      "Successfully created a theatre",
+      req.user,
+      "You have successfully created a new theatre"
+    );
+
     return res
       .status(STATUS.OK)
       .json(

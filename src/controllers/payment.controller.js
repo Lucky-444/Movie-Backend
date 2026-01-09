@@ -35,7 +35,7 @@ const createPaymentController = async (req, res) => {
     successResponseBody.message = "Payment processed successfully";
     successResponseBody.data = response;
 
-    sendMail("your Booking is successfull" , user.email , `Your booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} seats on ${response.timing} is successfull. Your booking id is ${response.id}`);
+    sendMail("your Booking is successfull" , response.userId , `Your booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} seats on ${response.timing} is successfull. Your booking id is ${response.id}`);
 
 
     console.log("sending Mail is Successfull");
