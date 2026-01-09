@@ -16,6 +16,7 @@ const {
   errorResponseBody,
 } = require("../utils/responseBody");
 const { success, failure } = require("../utils/newResponse");
+const sendMail = require("../services/email.service");
 
 
 const createTheatreController = async (req, res) => {
