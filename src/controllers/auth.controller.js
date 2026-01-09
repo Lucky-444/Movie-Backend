@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const {
   successResponseBody,
   errorResponseBody,
-} = require("../utils/responsebody");
+} = require("../utils/responseBody");
 
 const {
   createUser,

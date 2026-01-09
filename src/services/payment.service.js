@@ -107,11 +107,13 @@ const createPaymentService = async (paymentData) => {
       );
     }
 
+    
     // 🔥 SAVE ALL (FIXED)
     await payment.save();
     await booking.save();
     await show.save();
-
+    
+    console.log("No of Seats Left" , show.noOfSeats);
     return booking;
   } catch (error) {
     if (error.name === "ValidationError") {

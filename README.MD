@@ -412,6 +412,24 @@ __ROUTE PAYMENTS__
             createdAt: Date
          }
 
-                              
+
+__AXIOS__
+Axios is a JavaScript library used to send HTTP requests (API calls) from your application to a server and handle the response easily.
+
+Think of it as a better, cleaner alternative to fetch();
+Send JSON data to backend
+Handle responses & errors cleanly
+Set headers (tokens, auth, etc.)
+
+axios.get("https://api.example.com/users")
+  .then(res => {
+    console.log(res.data);
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
+
+
 
 
