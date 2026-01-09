@@ -2,6 +2,12 @@ const { createPaymentService } = require("../services/payment.service");
 const { STATUS, BOOKING_STATUS } = require("../utils/constants");
 const { errorResponseBody, successResponseBody } = require("../utils/responseBody");
 const {getAllPaymentsService , getPaymentById} = require("../services/payment.service");
+const User = require("../models/user.model");
+const sendMail = require("../services/email.service");
+const Movie = require("../models/movie.model");
+const Theatre = require("../models/theatre.model");
+
+
 
 const createPaymentController = async (req, res) => {
   try {
@@ -21,8 +27,19 @@ const createPaymentController = async (req, res) => {
       return res.status(STATUS.PAYMENT_REQUIRED).json(errorResponseBody);
     }
 
+    const user = await User.findById(response.userId);
+    const movie = await Movie.findById(response.movieId);
+    const theatre = await Theatre.findById(response.theatreId);
+        
+
     successResponseBody.message = "Payment processed successfully";
     successResponseBody.data = response;
+
+    sendMail("your Booking is successfull" , user.email , `Your booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} seats on ${response.timing} is successfull. Your booking id is ${response.id}`);
+
+
+    console.log("sending Mail is Successfull");
+
     return res.status(STATUS.CREATED).json(successResponseBody);
   } catch (error) {
     console.error("Error in createPaymentController:", error);

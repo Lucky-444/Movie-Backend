@@ -12,73 +12,31 @@ const User = require("../models/user.model");
 
 /**
  * createPaymentService
- *
- * This function is responsible for completing a booking payment.
- *
- * Main responsibilities:
- *  1️⃣ Validate booking
- *  2️⃣ Check expiry window (15 mins rule)
- *  3️⃣ Validate amount BEFORE creating payment
- *  4️⃣ Check seat availability again
- *  5️⃣ Create payment record
- *  6️⃣ Mark booking as successful
- *  7️⃣ Deduct seats
- *  8️⃣ Update seat configuration (seat map JSON)
  */
 const createPaymentService = async (paymentData) => {
   try {
-    /**
-     * STEP 1: Load booking using bookingId
-     *
-     * We need booking to verify:
-     *  - totalCost
-     *  - seat count
-     *  - movie + theatre + show
-     */
+    // 1️⃣ Load booking
     const booking = await Booking.findById(paymentData.bookingId);
 
-    // Booking does not exist → cannot continue
     if (!booking) {
       throw { err: "Booking not found", code: STATUS.NOT_FOUND };
     }
 
-    /**
-     * STEP 2: Prevent duplicate payment
-     *
-     * If booking already paid earlier — do NOT allow another payment
-     */
+    // 2️⃣ Prevent duplicate payment
     if (booking.status === BOOKING_STATUS.successfull) {
       throw { err: "Booking already paid", code: STATUS.FORBIDDEN };
     }
 
-    /**
-     * STEP 3: Expiry check
-     *
-     * Rule:
-     *   If booking created more than 15 minutes ago
-     *   → user must not be allowed to pay
-     *
-     * Why?
-     *  - seats must auto-release if user doesn't pay in time
-     */
+    // 3️⃣ Expiry check (15 mins)
     const minutes = Math.floor((Date.now() - booking.createdAt) / 1000 / 60);
 
     if (minutes > 15) {
       booking.status = BOOKING_STATUS.expired;
       await booking.save();
-      return booking; // stop flow here
+      return booking;
     }
 
-    /**
-     * STEP 4: Find Show connected to this booking
-     *
-     * We match:
-     *  - showId
-     *  - movieId   (for safety)
-     *  - theatreId (for safety)
-     *
-     * This ensures nobody manipulates IDs and books wrong show.
-     */
+    // 4️⃣ Find show
     const show = await Show.findOne({
       _id: paymentData.showId,
       movieId: booking.movieId,
@@ -89,92 +47,42 @@ const createPaymentService = async (paymentData) => {
       throw { err: "Show not found", code: STATUS.NOT_FOUND };
     }
 
-    /**
-     * STEP 5: Validate amount BEFORE creating payment record
-     *
-     * We DO NOT create payment entry if money is wrong.
-     *
-     * If payment mismatch:
-     *   - cancel booking
-     *   - user must re-book
-     */
-      const payment = await Payment.create({
-        booking: booking._id,
-        amount: paymentData.amount,
-      });
+    // 5️⃣ Create payment (PENDING by default)
+    const payment = await Payment.create({
+      booking: booking._id,
+      amount: paymentData.amount,
+      status: PAYMENT_STATUS.pending,
+    });
 
+    // 6️⃣ Validate amount
     if (Number(paymentData.amount) !== Number(booking.totalCost)) {
-      booking.status = BOOKING_STATUS.cancelled;
       payment.status = PAYMENT_STATUS.cancelled;
+      booking.status = BOOKING_STATUS.cancelled;
+
       await payment.save();
       await booking.save();
+
       return booking;
     }
 
-    /**
-     * STEP 6: Check seat availability AGAIN
-     *
-     * Reason:
-     *   Between time of booking and payment,
-     *   someone else may have booked remaining seats.
-     *
-     * If not enough → stop payment.
-     */
+    // 7️⃣ Seat availability check
     if (show.noOfSeats < booking.noOfSeats) {
       throw { err: "Seats not available", code: STATUS.BAD_REQUEST };
     }
 
-    /**
-     * STEP 7: Create payment entry
-     *
-     * Since amount + booking was valid → mark as SUCCESS directly.
-     *
-     * NOTE:
-     *   If you integrate Razorpay/Stripe later,
-     *   here you'll verify signature and status instead.
-     */
-
-
-    /**
-     * STEP 8: Mark booking as SUCCESS
-     *
-     * From now:
-     *   booking is confirmed
-     *   seats are officially sold
-     */
-    console.log(show.noOfSeats);
-    payment.status = PAYMENT_STATUS.success; 
+    // 8️⃣ SUCCESS CASE
+    payment.status = PAYMENT_STATUS.success;
     booking.status = BOOKING_STATUS.successfull;
-
-    /**
-     * STEP 9: Deduct seats from show
-     *
-     * Make sure noOfSeats never goes negative.
-     */
     show.noOfSeats -= booking.noOfSeats;
 
-    /**
-     * STEP 10: Update seat configuration (seat map)
-     *
-     * seatConfiguration is stored as:
-     *   JSON string with single quotes → '{ rows: [...] }'
-     *
-     * booking.seat is also stored as JSON string.
-     *
-     * We:
-     *   1️⃣ parse both
-     *   2️⃣ find booked seats
-     *   3️⃣ mark them as status = 2 (booked)
-     */
-    if (show.seatConfiguration) {
-      // convert to valid JSON
+    // 9️⃣ Update seat configuration
+    if (show.seatConfiguration && booking.seat) {
       const showSeatConfig = JSON.parse(
         show.seatConfiguration.replaceAll("'", '"')
       );
 
       const bookedSeats = JSON.parse(booking.seat.replaceAll("'", '"'));
 
-      // Create map to group seats row-wise
       const map = {};
 
       bookedSeats.forEach((seat) => {
@@ -182,87 +90,74 @@ const createPaymentService = async (paymentData) => {
         map[seat.rowNumber].add(seat.seatNumber);
       });
 
-      // Traverse seat rows and mark booked seats
       showSeatConfig.rows.forEach((row) => {
         if (!map[row.number]) return;
 
         row.seats = row.seats.map((s) => {
-          if (map[row.number].has(s.number)) s.status = 2; // 2 = booked
+          if (map[row.number].has(s.number)) {
+            s.status = 2; // booked
+          }
           return s;
         });
       });
 
-      // Convert JSON back to single-quote string format
       show.seatConfiguration = JSON.stringify(showSeatConfig).replaceAll(
         '"',
         "'"
       );
     }
 
-    /**
-     * STEP 11: Save everything to DB
-     */
-    await show.save();
+    // 🔥 SAVE ALL (FIXED)
+    await payment.save();
     await booking.save();
+    await show.save();
 
     return booking;
   } catch (error) {
-    /**
-     * STEP 12: Validation error handling
-     *
-     * Converts Mongoose validation errors to a readable object
-     */
     if (error.name === "ValidationError") {
       let err = {};
-      for (field in error.errors) {
+      for (let field in error.errors) {
         err[field] = error.errors[field].message;
       }
       throw { err, code: STATUS.UNPROCESSABLE_ENTITY };
     }
 
-    console.log(error);
     throw error;
   }
 };
 
+/**
+ * getPaymentById
+ */
 const getPaymentById = async (id) => {
-    try {
-        const response = await Payment.findById(id).populate('booking');
-        if(!response) {
-            throw {
-                err: 'No payment record found',
-                code: STATUS.NOT_FOUND
-            }
-        }
-        return response;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
+  const payment = await Payment.findById(id).populate("booking");
 
+  if (!payment) {
+    throw { err: "No payment record found", code: STATUS.NOT_FOUND };
+  }
+
+  return payment;
+};
+
+/**
+ * getAllPaymentsService
+ */
 const getAllPaymentsService = async (userId) => {
-    try {
-        const user = await User.findById(userId);
-        let filter = {};
-        if(user.userRole != USER_ROLE.admin) {
-            filter.userId = user.id;
-        }
-        const bookings = await Booking.find(filter, 'id');
+  const user = await User.findById(userId);
 
-        console.log(bookings);
+  let filter = {};
+  if (user.userRole !== USER_ROLE.admin) {
+    filter.userId = user.id;
+  }
 
-        const payments = await Payment.find({booking: {$in: bookings}});
-        console.log(payments)
-        return payments;
-    } catch (error) {
-        throw error;
-    }
-}
+  const bookings = await Booking.find(filter, "id");
 
+  const payments = await Payment.find({ booking: { $in: bookings } });
+  return payments;
+};
 
-module.exports = { 
-  createPaymentService ,
+module.exports = {
+  createPaymentService,
   getPaymentById,
   getAllPaymentsService,
 };
