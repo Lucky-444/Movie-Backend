@@ -22,17 +22,25 @@ const createTheatreController = async (req, res) => {
   try {
     const theatreData = req.body;
 
-    const response = await createTheatreService(theatreData);
+    const response = await createTheatreService({...theatreData , owner : req.user});
 
-    return res
-      .status(201)
-      .json(success("Theatre created successfully", response));
+    successResponseBody.data = response;
+    successResponseBody.message = "Successfully Created the theatre";
+    sendMail(
+       "Successfully created a theatre",
+       req.user,
+       "You have successfully created a new theatre"
+    );
+    return res.status(STATUS.CREATED).json(successResponseBody);
   } catch (error) {
     console.log("Error Occurred In CreateTheatreController", error);
 
-    return res
-      .status(error.code || STATUS.INTERNAL_SERVER_ERROR)
-      .json(failure("Error creating theatre", error.err || error.message));
+    if (error.err) {
+      errorResponseBody.err = error.err;
+      return res.status(error.code).json(errorResponseBody);
+    }
+    errorResponseBody.err = error;
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
   }
 };
 
